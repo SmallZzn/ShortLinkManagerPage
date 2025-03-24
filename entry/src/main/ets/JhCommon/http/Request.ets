@@ -45,9 +45,18 @@ service.interceptors.request.use(
     const username = JhAESPreferencesUtils.getString("username")
     if (accessToken) {
       config.headers.Authorization = 'Bearer ' + accessToken
-      config.headers.username = username
-
     }
+    
+    // 统一处理username，确保所有请求都使用编码后的username
+    if (username) {
+      try {
+        config.headers.username = encodeURIComponent(username)
+      } catch (e) {
+        console.error('编码username失败', e)
+        config.headers.username = username // 编码失败时使用原始值
+      }
+    }
+    
     return config
   },
   (error: AxiosError) => {

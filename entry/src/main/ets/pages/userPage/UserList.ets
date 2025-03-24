@@ -13,6 +13,7 @@ interface DialogButtonOptions {
 
 @Component
 export struct UserList {
+  @Prop userType: number = 0;
   // 主题色常量
   readonly themeColor: string = '#1890FF';
   readonly cardBgColor: string = '#FFFFFF';
@@ -52,10 +53,14 @@ export struct UserList {
   // 获取用户列表
   private async fetchUserList() {
     try {
+      const managerName = JhAESPreferencesUtils.getString('username');
+
       const params: object = Object({
         current: this.currentPage,
         size: this.pageSize,
-        username: this.searchText
+        username: this.searchText,
+        userType: this.userType,
+        managerName: managerName
       });
 
       // 根据查看模式添加状态过滤
@@ -132,29 +137,42 @@ export struct UserList {
       const res = await HttpUtils.put(APIs.updateUser, params);
 
       if (res.code === '0') {
-        JhProgressHUD.showSuccess(user.delFlag === 1 ? '启用成功' : '禁用成功');
+        JhProgressHUD.showSuccess(user.delFlag === 1 ? `启用${this.userType === 0 ? '用户' : '公司'}成功` :
+          `禁用${this.userType === 0 ? '用户' : '公司'}成功`);
 
         // 刷新用户列表
         this.fetchUserList();
       } else {
-        JhProgressHUD.showError(user.delFlag === 1 ? '启用失败' : '禁用失败');
+        JhProgressHUD.showError(user.delFlag === 1 ? `启用${this.userType === 0 ? '用户' : '公司'}失败` :
+          `禁用${this.userType === 0 ? '用户' : '公司'}失败`);
       }
     } catch (error) {
       console.error('更新用户状态失败:', error);
-      JhProgressHUD.showError(user.delFlag === 1 ? '启用失败' : '禁用失败');
+      JhProgressHUD.showError(user.delFlag === 1 ? `启用${this.userType === 0 ? '用户' : '公司'}失败` :
+        `禁用${this.userType === 0 ? '用户' : '公司'}失败`);
     } finally {
-      JhProgressHUD.dismiss();
     }
   }
 
   build() {
     Column() {
+      // 标题
+      Text(this.userType === 0 ? '个人用户列表' : '公司列表')
+        .fontSize(20)
+        .fontWeight(FontWeight.Medium)
+        .fontColor(this.textColor)
+        .margin({ bottom: 16 })
+        .alignSelf(ItemAlign.Start)
+
       // 操作栏
       Row() {
         // 搜索框区域
         Row({ space: 8 }) {
           Row() {
-            Search({ placeholder: '请输入用户名搜索', value: this.searchDisplayText })
+            Search({
+              placeholder: this.userType === 0 ? '请输入用户名搜索' : '请输入公司名称搜索',
+              value: this.searchDisplayText
+            })
               .width('100%')
               .height(36)
               .backgroundColor(Color.White)
@@ -189,11 +207,12 @@ export struct UserList {
             })
 
           // 查看用户状态按钮
-          Button(this.viewMode === 'all' ? '查看禁用用户' : 
-                 this.viewMode === 'disabled' ? '查看启用用户' : '查看所有用户')
+          Button(this.viewMode === 'all' ? `查看禁用${this.userType === 0 ? '用户' : '公司'}` :
+            this.viewMode === 'disabled' ? `查看启用${this.userType === 0 ? '用户' : '公司'}` :
+              `查看所有${this.userType === 0 ? '用户' : '公司'}`)
             .height(36)
-            .backgroundColor(this.viewMode === 'all' ? this.dangerColor : 
-                           this.viewMode === 'disabled' ? '#52C41A' : this.themeColor)
+            .backgroundColor(this.viewMode === 'all' ? this.dangerColor :
+              this.viewMode === 'disabled' ? '#52C41A' : this.themeColor)
             .fontColor(Color.White)
             .fontSize(14)
             .borderRadius(2)
@@ -220,33 +239,41 @@ export struct UserList {
       Column() {
         // 表头
         Row() {
-          Text('用户名')
+          Text(this.userType === 0 ? '用户名' : '公司名称')
             .width('20%')
             .fontSize(14)
             .fontColor(this.textColorSecondary)
             .textAlign(TextAlign.Center)
-          Text('电话号码')
-            .width('20%')
+          // 为公司列表添加负责人名称列
+          if (this.userType === 1) {
+            Text('负责人')
+              .width('10%')
+              .fontSize(14)
+              .fontColor(this.textColorSecondary)
+              .textAlign(TextAlign.Center)
+          }
+          Text(this.userType === 0 ? '电话号码' : '联系电话')
+            .width(this.userType === 0 ? '20%' : '15%')
             .fontSize(14)
             .fontColor(this.textColorSecondary)
             .textAlign(TextAlign.Center)
-          Text('邮箱')
-            .width('20%')
+          Text(this.userType === 0 ? '邮箱' : '公司邮箱')
+            .width(this.userType === 0 ? '20%' : '15%')
             .fontSize(14)
             .fontColor(this.textColorSecondary)
             .textAlign(TextAlign.Center)
           Text('是否禁用')
-            .width('10%')
+            .width(this.userType === 0 ? '10%' : '10%')
             .fontSize(14)
             .fontColor(this.textColorSecondary)
             .textAlign(TextAlign.Center)
           Text('创建时间')
-            .width('15%')
+            .width(this.userType === 0 ? '15%' : '15%')
             .fontSize(14)
             .fontColor(this.textColorSecondary)
             .textAlign(TextAlign.Center)
           Text('操作')
-            .width('15%')
+            .width(this.userType === 0 ? '15%' : '15%')
             .fontSize(14)
             .fontColor(this.textColorSecondary)
             .textAlign(TextAlign.Center)
@@ -266,23 +293,30 @@ export struct UserList {
                   .fontSize(14)
                   .fontColor(this.textColorSecondary)
                   .textAlign(TextAlign.Center)
+                if (this.userType === 1) {
+                  Text(user.realName || '')
+                    .width('10%')
+                    .fontSize(14)
+                    .fontColor(this.textColorSecondary)
+                    .textAlign(TextAlign.Center)
+                }
                 Text(user.phone)
-                  .width('20%')
+                  .width(this.userType === 0 ? '20%' : '15%')
                   .fontSize(14)
                   .fontColor(this.textColorSecondary)
                   .textAlign(TextAlign.Center)
                 Text(user.mail)
-                  .width('20%')
+                  .width(this.userType === 0 ? '20%' : '15%')
                   .fontSize(14)
                   .fontColor(this.textColorSecondary)
                   .textAlign(TextAlign.Center)
                 Text(user.delFlag === 1 ? '是' : '否')
-                  .width('10%')
+                  .width(this.userType === 0 ? '10%' : '10%')
                   .fontSize(14)
                   .fontColor(user.delFlag === 1 ? this.dangerColor : this.textColorSecondary)
                   .textAlign(TextAlign.Center)
                 Text(user.createTime ? this.formatDate(user.createTime) : '')
-                  .width('15%')
+                  .width(this.userType === 0 ? '15%' : '15%')
                   .fontSize(14)
                   .fontColor(this.textColorSecondary)
                   .textAlign(TextAlign.Center)
@@ -297,15 +331,16 @@ export struct UserList {
                       promptAction.showDialog({
                         title: user.delFlag === 1 ? '启用确认' : '禁用确认',
                         message: user.delFlag === 1 ?
-                          '确定要启用该用户吗？\n' :
-                          '确定要禁用该用户吗？\n',
+                          `确定要启用该${this.userType === 0 ? '用户' : '公司'}吗？\n` :
+                          `确定要禁用该${this.userType === 0 ? '用户' : '公司'}吗？\n`,
                         buttons: [
                           {
                             text: '取消',
                             color: '#666666',
                           } as DialogButtonOptions,
                           {
-                            text: user.delFlag === 1 ? '确定启用' : '确定禁用',
+                            text: user.delFlag === 1 ? `确定启用${this.userType === 0 ? '' : '公司'}` :
+                              `确定禁用${this.userType === 0 ? '' : '公司'}`,
                             color: user.delFlag === 1 ? this.themeColor : this.dangerColor,
                           } as DialogButtonOptions
                         ],
@@ -318,7 +353,7 @@ export struct UserList {
                         })
                     })
                 }
-                .width('15%')
+                .width(this.userType === 0 ? '15%' : '15%')
                 .justifyContent(FlexAlign.Center) // 按钮居中
               }
               .width('100%')

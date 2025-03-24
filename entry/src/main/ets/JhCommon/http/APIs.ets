@@ -5,13 +5,28 @@
 
 export class APIs {
   // url 前缀
-  static readonly apiPrefix: string = '172.19.64.1:8003'
+  static readonly apiPrefix: string = '172.28.96.1:8003'
 
   //=====================用户管理===========================
-  static readonly pageUserList: string = '/api/short-link/admin/v1/user/pageUserList'
+  static readonly pageUserList: string = '/api/short-link/admin/v1/manager-to-user/pageUserList'
   static readonly updateUser: string = '/api/short-link/admin/v1/user'
 
-  
+  //=====================管理员管理===========================
+  static readonly managerLogin: string = '/api/short-link/admin/v1/manager/login'
+  static readonly checkLogin: string = '/api/short-link/admin/v1/manager/check-login'
+  static readonly getManagerByUsername: string = '/api/short-link/admin/v1/manager/'
+  static readonly pageManagerList: string = '/api/short-link/admin/v1/manager/page'
+  static readonly updateManager: string = '/api/short-link/admin/v1/manager'
+  static readonly createManager: string = '/api/short-link/admin/v1/manager'
+
+
+  //=====================管理员用户分配===========================
+  static readonly getAssignedList: string = '/api/short-link/admin/v1/manager-to-user/getAssignedList'
+  static readonly createManagerToUser: string = '/api/short-link/admin/v1/manager-to-user'
+  static readonly deleteManagerToUser: string = '/api/short-link/admin/v1/manager-to-user/delete'
+  static readonly assignedUsers: string = '/api/short-link/admin/v1/manager/assign/assigned-users'
+  static readonly unassignedUsers: string = '/api/short-link/admin/v1/manager/assign/unassigned-users'
+  static readonly assignUser: string = '/api/short-link/admin/v1/manager/assign/assign-user'
 
   //=====================其它=============================
   /// 刷新token

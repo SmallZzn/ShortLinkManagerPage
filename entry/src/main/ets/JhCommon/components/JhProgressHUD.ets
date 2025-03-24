@@ -103,11 +103,6 @@ export class JhProgressHUD {
     JhProgressHUD.hide()
   }
 
-  /// 隐藏加载框 (别名方法，与hide功能相同)
-  public static dismiss() {
-    JhProgressHUD.hide()
-  }
-
   /// 全局参数配置
   /// API文档 https://gitee.com/kukumalu/xthud
   private static initXTPromptHUDConfig(context: UIContext) {
