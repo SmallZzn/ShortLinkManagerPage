@@ -1,4 +1,4 @@
-import { OverviewData } from '../../model/i';
+import { OverviewData } from '../../model/UserInterface';
 
 @Component
 export struct Workbench {

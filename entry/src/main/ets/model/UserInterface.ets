@@ -88,3 +88,4 @@ export class AssignUserParams {
   username?: string;
   userType?: number;
 }
+

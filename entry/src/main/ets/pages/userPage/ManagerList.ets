@@ -1,4 +1,4 @@
-import { Manager, User } from '../../model/i';
+import { Manager, User } from '../../model/UserInterface';
 import { HttpUtils } from '../../JhCommon/http/HttpUtils';
 import { APIs } from '../../JhCommon/http/APIs';
 import { JhProgressHUD } from '../../JhCommon/components/JhProgressHUD';

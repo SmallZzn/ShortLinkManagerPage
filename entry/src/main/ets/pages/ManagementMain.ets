@@ -1,4 +1,4 @@
-import { ShortLinkStatsData, User, OverviewData, StatsMenuItem } from '../model/i';
+import { ShortLinkStatsData, User, OverviewData, StatsMenuItem } from '../model/UserInterface';
 import { Workbench } from './homePage/Work';
 import { UserList } from './userPage/UserList';
 import { JhAESPreferencesUtils } from '../JhCommon/utils/JhPreferencesUtils';
@@ -8,6 +8,7 @@ import { JhProgressHUD } from '../JhCommon/components/JhProgressHUD';
 import router from '@ohos.router';
 import { ManagerInfoPopup } from './userPage/CompanyList';
 import { ManagerList } from './userPage/ManagerList';
+import { ShortLinkList } from './ShortLinkPage/ShortLinkList';
 
 @Entry
 @Component
@@ -884,14 +885,9 @@ struct ManagementMain {
                 }
               } else if (this.currentNav === 'shortlink') {
                 // 短链接列表内容
-                Column() {
-                  Text('短链接列表（待实现）')
-                    .fontSize(18)
-                    .fontWeight(FontWeight.Medium)
-                    .margin({ top: 20 })
+                if (this.currentSubNav === 'shortlinkList') {
+                  ShortLinkList()
                 }
-                .width('100%')
-                .padding(24)
               } else if (this.currentNav === 'stats') {
                 // 数据统计内容
                 Column() {

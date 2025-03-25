@@ -5,7 +5,7 @@
 
 export class APIs {
   // url 前缀
-  static readonly apiPrefix: string = '172.28.96.1:8003'
+  static readonly apiPrefix: string = '172.18.128.1:8003'
 
   //=====================用户管理===========================
   static readonly pageUserList: string = '/api/short-link/admin/v1/manager-to-user/pageUserList'
@@ -19,7 +19,6 @@ export class APIs {
   static readonly updateManager: string = '/api/short-link/admin/v1/manager'
   static readonly createManager: string = '/api/short-link/admin/v1/manager'
 
-
   //=====================管理员用户分配===========================
   static readonly getAssignedList: string = '/api/short-link/admin/v1/manager-to-user/getAssignedList'
   static readonly createManagerToUser: string = '/api/short-link/admin/v1/manager-to-user'
@@ -27,6 +26,24 @@ export class APIs {
   static readonly assignedUsers: string = '/api/short-link/admin/v1/manager/assign/assigned-users'
   static readonly unassignedUsers: string = '/api/short-link/admin/v1/manager/assign/unassigned-users'
   static readonly assignUser: string = '/api/short-link/admin/v1/manager/assign/assign-user'
+  static readonly getManagerShortLink: string = '/api/short-link/v1/manager-to-user/getManagerShortLink'
+  static readonly listByManagerName: string = '/api/short-link/admin/v1/manager-to-user/manager/'
+
+  //=====================短链接状态===========================
+  // 访问单个短链接指定时间内监控数据
+  static readonly shortLinkStats: string = '/api/short-link/admin/v1/stats';
+
+  // 访问分组短链接指定时间内监控数据
+  static readonly groupShortLinkStats: string = '/api/short-link/v1/stats/group';
+
+  // 访问单个短链接指定时间内访问记录监控数据
+  static readonly shortLinkStatsAccessRecord: string = '/api/short-link/v1/stats/access-record';
+
+  // 访问分组短链接指定时间内访问记录监控数据
+  static readonly groupShortLinkStatsAccessRecord: string = '/api/short-link/v1/stats/access-record/group';
+
+
+
 
   //=====================其它=============================
   /// 刷新token
