@@ -5,7 +5,7 @@
 
 export class APIs {
   // url 前缀
-  static readonly apiPrefix: string = '172.18.128.1:8003'
+  static readonly apiPrefix: string = '172.19.112.1:8003'
 
   //=====================用户管理===========================
   static readonly pageUserList: string = '/api/short-link/admin/v1/manager-to-user/pageUserList'
@@ -42,7 +42,23 @@ export class APIs {
   // 访问分组短链接指定时间内访问记录监控数据
   static readonly groupShortLinkStatsAccessRecord: string = '/api/short-link/v1/stats/access-record/group';
 
+  // 查看用某一用户指定时间内访问曲线
+  static readonly groupShortLinkStatsAccess: string = '/api/short-link/v1/manager-to-user/groupShortLinkStatsAccess'
+  
+  // 查看用某一用户指定时间内地区分布
+  static readonly groupShortLinkStatsArea: string = '/api/short-link/v1/manager-to-user/groupShortLinkStatsArea'
 
+  // 查看用某一用户指定时间内24小时分布
+  static readonly groupShortLinkStatsHours: string = '/api/short-link/v1/manager-to-user/groupShortLinkStatsHours'
+
+  // 查看用某一用户指定时间一周分布
+  static readonly groupShortLinkStatsWeek: string = '/api/short-link/v1/manager-to-user/groupShortLinkStatsWeek'
+
+  // 查看用某一用户指定时间内访问用户信息
+  static readonly groupShortLinkStatsUser: string = '/api/short-link/v1/manager-to-user/groupShortLinkStatsUser'
+
+  // 查看用某一用户指定时间内访问记录
+  static readonly groupShortLinkStatsRecord: string = '/api/short-link/v1/manager-to-user/groupShortLinkStatsRecord'
 
 
   //=====================其它=============================

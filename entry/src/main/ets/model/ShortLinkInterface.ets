@@ -43,6 +43,7 @@ export class ShortLinkStatsData {
   uip: number = 0; // 独立IP数
   daily: Array<DailyStats> = [];
   localeCnStats: Array<CountStats> = [];
+  localeCnts: Array<CountStats> = []; // 添加这个属性用于兼容MapChart组件
   hourStats: Array<number> = [];
   topIpStats: Array<TopIpStats> = [];
   weekdayStats: Array<number> = [];

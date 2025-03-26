@@ -5,6 +5,7 @@ import { ShortLink } from "../../model/ShortLinkInterface";
 import { JhAESPreferencesUtils } from "../../JhCommon/utils/JhPreferencesUtils";
 import systemPasteboard from '@ohos.pasteboard';
 import { ShortLinkStats } from "./ShortLinkStats";
+import router from '@ohos.router';
 
 interface ManagerToUserDO {
   id: number;
@@ -436,6 +437,16 @@ export struct ShortLinkList {
                         .fontColor(this.isLinkExpired(item) ? this.textColorSecondary : '#007AFF')
                         .margin({ bottom: 4 })
                         .opacity(this.isLinkExpired(item) ? 0.6 : 1)
+                        .onClick(() => {
+                          if (!this.isLinkExpired(item)) {
+                            router.pushUrl({
+                              url: 'pages/Statistics/Access',
+                              params: {
+                                shortLink: item
+                              }
+                            });
+                          }
+                        })
 
                       Button({ type: ButtonType.Circle }) {
                         Image($r('app.media.share'))

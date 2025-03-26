@@ -53,18 +53,6 @@ export struct NetworkStatsList {
       .width('100%')
       .height('100%')
       .padding({ left: 16, right: 16 })
-      
-      // 如果数据为空，显示提示
-      if (this.networkStats.length === 0) {
-        Column() {
-          Text('暂无数据')
-            .fontSize(14)
-            .fontColor(this.textColorSecondary)
-        }
-        .width('100%')
-        .height('100%')
-        .justifyContent(FlexAlign.Center)
-      }
     }
     .width('100%')
     .height(200)

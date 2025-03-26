@@ -9,6 +9,12 @@ import router from '@ohos.router';
 import { ManagerInfoPopup } from './userPage/CompanyList';
 import { ManagerList } from './userPage/ManagerList';
 import { ShortLinkList } from './ShortLinkPage/ShortLinkList';
+import { Access } from './Statistics/Access';
+import { Area } from './Statistics/Area';
+import { Hours } from './Statistics/Hours';
+import { Week } from './Statistics/Week';
+import { UserStats } from './Statistics/UserStats';
+import { AccessRecord } from './Statistics/AccessRecord';
 
 @Entry
 @Component
@@ -81,13 +87,9 @@ struct ManagementMain {
     { key: 'visit', title: '访问统计' },
     { key: 'region', title: '地区分布' },
     { key: 'hourly', title: '24小时分布' },
-    { key: 'ip', title: 'IP分布' },
     { key: 'weekly', title: '一周分布' },
-    { key: 'os', title: '操作系统' },
-    { key: 'browser', title: '访问浏览器' },
-    { key: 'visitor', title: '访客类型' },
-    { key: 'network', title: '访问网络' },
-    { key: 'device', title: '访问设备' }
+    { key: 'userInfo', title: '用户信息' },
+    { key: 'accessRecord', title: '访问记录' }
   ]
   @State isDrawerOpening: boolean = false;
   @State drawerWidth: number = 0;
@@ -646,7 +648,7 @@ struct ManagementMain {
                       .margin({ right: 12 })
                       .fillColor(this.navTextColorSecondary)
                     if (!this.isCollapsed) {
-                      Text('数据统计')
+                      Text('访问统计')
                         .fontSize(14)
                         .fontColor(this.navTextColorSecondary)
                     }
@@ -815,7 +817,7 @@ struct ManagementMain {
                   this.currentNav === 'user' && this.currentSubNav === 'companyList' ? '公司列表' :
                     this.currentNav === 'user' && this.currentSubNav === 'roleManage' ? '管理员列表' :
                       this.currentNav === 'shortlink' && this.currentSubNav === 'shortlinkList' ? '短链接列表' :
-                        this.currentNav === 'stats' ? '数据统计' :
+                        this.currentNav === 'stats' ? '访问统计' :
                           this.currentNav === 'whitelist' && this.currentSubNav === 'whitelistList' ? '白名单列表' : '')
                 .fontSize(14)
                 .fontColor(this.textColor)
@@ -890,547 +892,561 @@ struct ManagementMain {
                 }
               } else if (this.currentNav === 'stats') {
                 // 数据统计内容
-                Column() {
-                  // 日期选择和搜索按钮
-                  Row() {
+                if (this.currentSubNav === 'visit') {
+                  Access()
+                } else if (this.currentSubNav === 'region') {
+                  Area()
+                } else if (this.currentSubNav === 'hourly') {
+                  Hours()
+                } else if (this.currentSubNav === 'weekly') {
+                  Week()
+                } else if (this.currentSubNav === 'userInfo') {
+                  UserStats()
+                } else if (this.currentSubNav === 'accessRecord') {
+                  AccessRecord()
+                } else {
+                  Column() {
+                    // 日期选择和搜索按钮
                     Row() {
-                      Text('日期范围：')
-                        .fontSize(14)
-                        .fontColor(this.textColor)
-
-                      // 开始日期按钮
-                      Button({ type: ButtonType.Capsule }) {
-                        Text(this.startDate)
+                      Row() {
+                        Text('日期范围：')
                           .fontSize(14)
                           .fontColor(this.textColor)
-                      }
-                      .backgroundColor(Color.White)
-                      .border({ width: 1, color: this.borderColorValue })
-                      .height(32)
-                      .onClick(() => {
-                        // 显示日期选择器
-                      })
 
-                      Text(' 至 ')
-                        .fontSize(14)
-                        .fontColor(this.textColor)
-
-                      // 结束日期按钮
-                      Button({ type: ButtonType.Capsule }) {
-                        Text(this.endDate)
-                          .fontSize(14)
-                          .fontColor(this.textColor)
-                      }
-                      .backgroundColor(Color.White)
-                      .border({ width: 1, color: this.borderColorValue })
-                      .height(32)
-                      .onClick(() => {
-                        // 显示日期选择器
-                      })
-                    }
-
-                    // 搜索框和按钮
-                    Row() {
-                      TextInput({ placeholder: '请输入关键词搜索', text: this.searchKeyword })
-                        .width(200)
-                        .height(32)
+                        // 开始日期按钮
+                        Button({ type: ButtonType.Capsule }) {
+                          Text(this.startDate)
+                            .fontSize(14)
+                            .fontColor(this.textColor)
+                        }
                         .backgroundColor(Color.White)
-                        .borderRadius(2)
                         .border({ width: 1, color: this.borderColorValue })
-                        .onChange((value: string) => {
-                          this.searchKeyword = value;
-                        })
-                        .margin({ right: 8 })
-
-                      // 搜索按钮
-                      Button('搜索')
                         .height(32)
-                        .backgroundColor(this.themeColor)
-                        .fontColor(Color.White)
-                        .borderRadius(2)
                         .onClick(() => {
-                          this.fetchStatsData();
+                          // 显示日期选择器
                         })
+
+                        Text(' 至 ')
+                          .fontSize(14)
+                          .fontColor(this.textColor)
+
+                        // 结束日期按钮
+                        Button({ type: ButtonType.Capsule }) {
+                          Text(this.endDate)
+                            .fontSize(14)
+                            .fontColor(this.textColor)
+                        }
+                        .backgroundColor(Color.White)
+                        .border({ width: 1, color: this.borderColorValue })
+                        .height(32)
+                        .onClick(() => {
+                          // 显示日期选择器
+                        })
+                      }
+
+                      // 搜索框和按钮
+                      Row() {
+                        TextInput({ placeholder: '请输入关键词搜索', text: this.searchKeyword })
+                          .width(200)
+                          .height(32)
+                          .backgroundColor(Color.White)
+                          .borderRadius(2)
+                          .border({ width: 1, color: this.borderColorValue })
+                          .onChange((value: string) => {
+                            this.searchKeyword = value;
+                          })
+                          .margin({ right: 8 })
+
+                        // 搜索按钮
+                        Button('搜索')
+                          .height(32)
+                          .backgroundColor(this.themeColor)
+                          .fontColor(Color.White)
+                          .borderRadius(2)
+                          .onClick(() => {
+                            this.fetchStatsData();
+                          })
+                      }
                     }
+                    .width('100%')
+                    .justifyContent(FlexAlign.SpaceBetween)
+                    .margin({ bottom: 24 })
+
+                    // 统计数据展示
+                    Grid() {
+                      // 访问量统计
+                      GridItem() {
+                        Column() {
+                          Row() {
+                            Text('总访问量')
+                              .fontSize(14)
+                              .fontColor(this.textColorSecondary)
+                            Image($r('app.media.user'))
+                              .width(20)
+                              .height(20)
+                              .margin({ left: 8 })
+                          }
+
+                          Text(this.statsData?.pv?.toString() || '0')
+                            .fontSize(24)
+                            .fontWeight(FontWeight.Bold)
+                            .fontColor(this.textColor)
+                            .margin({ top: 8 })
+
+                          Text('较上周')
+                            .fontSize(12)
+                            .fontColor(this.textColorSecondary)
+                            .margin({ top: 4 })
+                        }
+                        .width('100%')
+                        .height(120)
+                        .backgroundColor(Color.White)
+                        .borderRadius(8)
+                        .padding(16)
+                        .justifyContent(FlexAlign.Center)
+                      }
+
+                      // 访客数统计
+                      GridItem() {
+                        Column() {
+                          Row() {
+                            Text('访客数')
+                              .fontSize(14)
+                              .fontColor(this.textColorSecondary)
+                            Image($r('app.media.user'))
+                              .width(20)
+                              .height(20)
+                              .margin({ left: 8 })
+                          }
+
+                          Text(this.statsData?.uv?.toString() || '0')
+                            .fontSize(24)
+                            .fontWeight(FontWeight.Bold)
+                            .fontColor(this.textColor)
+                            .margin({ top: 8 })
+
+                          Text('较上周')
+                            .fontSize(12)
+                            .fontColor(this.textColorSecondary)
+                            .margin({ top: 4 })
+                        }
+                        .width('100%')
+                        .height(120)
+                        .backgroundColor(Color.White)
+                        .borderRadius(8)
+                        .padding(16)
+                        .justifyContent(FlexAlign.Center)
+                      }
+
+                      // IP数统计
+                      GridItem() {
+                        Column() {
+                          Row() {
+                            Text('IP数')
+                              .fontSize(14)
+                              .fontColor(this.textColorSecondary)
+                            Image($r('app.media.user'))
+                              .width(20)
+                              .height(20)
+                              .margin({ left: 8 })
+                          }
+
+                          Text(this.statsData?.uip?.toString() || '0')
+                            .fontSize(24)
+                            .fontWeight(FontWeight.Bold)
+                            .fontColor(this.textColor)
+                            .margin({ top: 8 })
+
+                          Text('较上周')
+                            .fontSize(12)
+                            .fontColor(this.textColorSecondary)
+                            .margin({ top: 4 })
+                        }
+                        .width('100%')
+                        .height(120)
+                        .backgroundColor(Color.White)
+                        .borderRadius(8)
+                        .padding(16)
+                        .justifyContent(FlexAlign.Center)
+                      }
+                    }
+                    .columnsTemplate('1fr 1fr 1fr')
+                    .columnsGap(16)
+                    .rowsGap(16)
+                    .width('100%')
+                    .margin({ bottom: 24 })
+
+                    // 图表区域
+                    Grid() {
+                      // 访问趋势图
+                      GridItem() {
+                        Column() {
+                          Text('访问趋势')
+                            .fontSize(16)
+                            .fontWeight(FontWeight.Medium)
+                            .fontColor(this.textColor)
+                            .margin({ bottom: 16 })
+
+                          // 模拟图表内容
+                          Row() {
+                            Column() {
+                              Divider().height(1).color('#EEEEEE')
+                              Text('暂无数据')
+                                .fontSize(14)
+                                .fontColor(this.textColorSecondary)
+                                .margin({ top: 100 })
+                              Divider().height(1).color('#EEEEEE')
+                            }
+                            .width('100%')
+                            .height('100%')
+                            .justifyContent(FlexAlign.Center)
+                            .alignItems(HorizontalAlign.Center)
+                          }
+                          .width('100%')
+                          .height('85%')
+                          .backgroundColor('#F8F9FA')
+                          .borderRadius(4)
+                        }
+                        .width('100%')
+                        .height(300)
+                        .backgroundColor(Color.White)
+                        .borderRadius(8)
+                        .padding(16)
+                      }
+
+                      // 地区分布图
+                      GridItem() {
+                        Column() {
+                          Text('地区分布')
+                            .fontSize(16)
+                            .fontWeight(FontWeight.Medium)
+                            .fontColor(this.textColor)
+                            .margin({ bottom: 16 })
+
+                          // 模拟图表内容
+                          Row() {
+                            Column() {
+                              Divider().height(1).color('#EEEEEE')
+                              Text('暂无数据')
+                                .fontSize(14)
+                                .fontColor(this.textColorSecondary)
+                                .margin({ top: 100 })
+                              Divider().height(1).color('#EEEEEE')
+                            }
+                            .width('100%')
+                            .height('100%')
+                            .justifyContent(FlexAlign.Center)
+                            .alignItems(HorizontalAlign.Center)
+                          }
+                          .width('100%')
+                          .height('85%')
+                          .backgroundColor('#F8F9FA')
+                          .borderRadius(4)
+                        }
+                        .width('100%')
+                        .height(300)
+                        .backgroundColor(Color.White)
+                        .borderRadius(8)
+                        .padding(16)
+                      }
+
+                      // 24小时分布图
+                      GridItem() {
+                        Column() {
+                          Text('24小时分布')
+                            .fontSize(16)
+                            .fontWeight(FontWeight.Medium)
+                            .fontColor(this.textColor)
+                            .margin({ bottom: 16 })
+
+                          // 模拟图表内容
+                          Row() {
+                            Column() {
+                              Divider().height(1).color('#EEEEEE')
+                              Text('暂无数据')
+                                .fontSize(14)
+                                .fontColor(this.textColorSecondary)
+                                .margin({ top: 100 })
+                              Divider().height(1).color('#EEEEEE')
+                            }
+                            .width('100%')
+                            .height('100%')
+                            .justifyContent(FlexAlign.Center)
+                            .alignItems(HorizontalAlign.Center)
+                          }
+                          .width('100%')
+                          .height('85%')
+                          .backgroundColor('#F8F9FA')
+                          .borderRadius(4)
+                        }
+                        .width('100%')
+                        .height(300)
+                        .backgroundColor(Color.White)
+                        .borderRadius(8)
+                        .padding(16)
+                      }
+
+                      // IP分布图
+                      GridItem() {
+                        Column() {
+                          Text('IP分布')
+                            .fontSize(16)
+                            .fontWeight(FontWeight.Medium)
+                            .fontColor(this.textColor)
+                            .margin({ bottom: 16 })
+
+                          // 模拟图表内容
+                          Row() {
+                            Column() {
+                              Divider().height(1).color('#EEEEEE')
+                              Text('暂无数据')
+                                .fontSize(14)
+                                .fontColor(this.textColorSecondary)
+                                .margin({ top: 100 })
+                              Divider().height(1).color('#EEEEEE')
+                            }
+                            .width('100%')
+                            .height('100%')
+                            .justifyContent(FlexAlign.Center)
+                            .alignItems(HorizontalAlign.Center)
+                          }
+                          .width('100%')
+                          .height('85%')
+                          .backgroundColor('#F8F9FA')
+                          .borderRadius(4)
+                        }
+                        .width('100%')
+                        .height(300)
+                        .backgroundColor(Color.White)
+                        .borderRadius(8)
+                        .padding(16)
+                      }
+
+                      // 一周分布图
+                      GridItem() {
+                        Column() {
+                          Text('一周分布')
+                            .fontSize(16)
+                            .fontWeight(FontWeight.Medium)
+                            .fontColor(this.textColor)
+                            .margin({ bottom: 16 })
+
+                          // 模拟图表内容
+                          Row() {
+                            Column() {
+                              Divider().height(1).color('#EEEEEE')
+                              Text('暂无数据')
+                                .fontSize(14)
+                                .fontColor(this.textColorSecondary)
+                                .margin({ top: 100 })
+                              Divider().height(1).color('#EEEEEE')
+                            }
+                            .width('100%')
+                            .height('100%')
+                            .justifyContent(FlexAlign.Center)
+                            .alignItems(HorizontalAlign.Center)
+                          }
+                          .width('100%')
+                          .height('85%')
+                          .backgroundColor('#F8F9FA')
+                          .borderRadius(4)
+                        }
+                        .width('100%')
+                        .height(300)
+                        .backgroundColor(Color.White)
+                        .borderRadius(8)
+                        .padding(16)
+                      }
+
+                      // 操作系统分布图
+                      GridItem() {
+                        Column() {
+                          Text('操作系统')
+                            .fontSize(16)
+                            .fontWeight(FontWeight.Medium)
+                            .fontColor(this.textColor)
+                            .margin({ bottom: 16 })
+
+                          // 模拟图表内容
+                          Row() {
+                            Column() {
+                              Divider().height(1).color('#EEEEEE')
+                              Text('暂无数据')
+                                .fontSize(14)
+                                .fontColor(this.textColorSecondary)
+                                .margin({ top: 100 })
+                              Divider().height(1).color('#EEEEEE')
+                            }
+                            .width('100%')
+                            .height('100%')
+                            .justifyContent(FlexAlign.Center)
+                            .alignItems(HorizontalAlign.Center)
+                          }
+                          .width('100%')
+                          .height('85%')
+                          .backgroundColor('#F8F9FA')
+                          .borderRadius(4)
+                        }
+                        .width('100%')
+                        .height(300)
+                        .backgroundColor(Color.White)
+                        .borderRadius(8)
+                        .padding(16)
+                      }
+
+                      // 访问浏览器分布图
+                      GridItem() {
+                        Column() {
+                          Text('访问浏览器')
+                            .fontSize(16)
+                            .fontWeight(FontWeight.Medium)
+                            .fontColor(this.textColor)
+                            .margin({ bottom: 16 })
+
+                          // 模拟图表内容
+                          Row() {
+                            Column() {
+                              Divider().height(1).color('#EEEEEE')
+                              Text('暂无数据')
+                                .fontSize(14)
+                                .fontColor(this.textColorSecondary)
+                                .margin({ top: 100 })
+                              Divider().height(1).color('#EEEEEE')
+                            }
+                            .width('100%')
+                            .height('100%')
+                            .justifyContent(FlexAlign.Center)
+                            .alignItems(HorizontalAlign.Center)
+                          }
+                          .width('100%')
+                          .height('85%')
+                          .backgroundColor('#F8F9FA')
+                          .borderRadius(4)
+                        }
+                        .width('100%')
+                        .height(300)
+                        .backgroundColor(Color.White)
+                        .borderRadius(8)
+                        .padding(16)
+                      }
+
+                      // 访客类型分布图
+                      GridItem() {
+                        Column() {
+                          Text('访客类型')
+                            .fontSize(16)
+                            .fontWeight(FontWeight.Medium)
+                            .fontColor(this.textColor)
+                            .margin({ bottom: 16 })
+
+                          // 模拟图表内容
+                          Row() {
+                            Column() {
+                              Divider().height(1).color('#EEEEEE')
+                              Text('暂无数据')
+                                .fontSize(14)
+                                .fontColor(this.textColorSecondary)
+                                .margin({ top: 100 })
+                              Divider().height(1).color('#EEEEEE')
+                            }
+                            .width('100%')
+                            .height('100%')
+                            .justifyContent(FlexAlign.Center)
+                            .alignItems(HorizontalAlign.Center)
+                          }
+                          .width('100%')
+                          .height('85%')
+                          .backgroundColor('#F8F9FA')
+                          .borderRadius(4)
+                        }
+                        .width('100%')
+                        .height(300)
+                        .backgroundColor(Color.White)
+                        .borderRadius(8)
+                        .padding(16)
+                      }
+
+                      // 访问网络分布图
+                      GridItem() {
+                        Column() {
+                          Text('访问网络')
+                            .fontSize(16)
+                            .fontWeight(FontWeight.Medium)
+                            .fontColor(this.textColor)
+                            .margin({ bottom: 16 })
+
+                          // 模拟图表内容
+                          Row() {
+                            Column() {
+                              Divider().height(1).color('#EEEEEE')
+                              Text('暂无数据')
+                                .fontSize(14)
+                                .fontColor(this.textColorSecondary)
+                                .margin({ top: 100 })
+                              Divider().height(1).color('#EEEEEE')
+                            }
+                            .width('100%')
+                            .height('100%')
+                            .justifyContent(FlexAlign.Center)
+                            .alignItems(HorizontalAlign.Center)
+                          }
+                          .width('100%')
+                          .height('85%')
+                          .backgroundColor('#F8F9FA')
+                          .borderRadius(4)
+                        }
+                        .width('100%')
+                        .height(300)
+                        .backgroundColor(Color.White)
+                        .borderRadius(8)
+                        .padding(16)
+                      }
+
+                      // 访问设备分布图
+                      GridItem() {
+                        Column() {
+                          Text('访问设备')
+                            .fontSize(16)
+                            .fontWeight(FontWeight.Medium)
+                            .fontColor(this.textColor)
+                            .margin({ bottom: 16 })
+
+                          // 模拟图表内容
+                          Row() {
+                            Column() {
+                              Divider().height(1).color('#EEEEEE')
+                              Text('暂无数据')
+                                .fontSize(14)
+                                .fontColor(this.textColorSecondary)
+                                .margin({ top: 100 })
+                              Divider().height(1).color('#EEEEEE')
+                            }
+                            .width('100%')
+                            .height('100%')
+                            .justifyContent(FlexAlign.Center)
+                            .alignItems(HorizontalAlign.Center)
+                          }
+                          .width('100%')
+                          .height('85%')
+                          .backgroundColor('#F8F9FA')
+                          .borderRadius(4)
+                        }
+                        .width('100%')
+                        .height(300)
+                        .backgroundColor(Color.White)
+                        .borderRadius(8)
+                        .padding(16)
+                      }
+                    }
+                    .columnsTemplate('1fr 1fr')
+                    .columnsGap(16)
+                    .rowsGap(16)
+                    .width('100%')
                   }
                   .width('100%')
-                  .justifyContent(FlexAlign.SpaceBetween)
-                  .margin({ bottom: 24 })
-
-                  // 统计数据展示
-                  Grid() {
-                    // 访问量统计
-                    GridItem() {
-                      Column() {
-                        Row() {
-                          Text('总访问量')
-                            .fontSize(14)
-                            .fontColor(this.textColorSecondary)
-                          Image($r('app.media.user'))
-                            .width(20)
-                            .height(20)
-                            .margin({ left: 8 })
-                        }
-
-                        Text(this.statsData?.pv?.toString() || '0')
-                          .fontSize(24)
-                          .fontWeight(FontWeight.Bold)
-                          .fontColor(this.textColor)
-                          .margin({ top: 8 })
-
-                        Text('较上周')
-                          .fontSize(12)
-                          .fontColor(this.textColorSecondary)
-                          .margin({ top: 4 })
-                      }
-                      .width('100%')
-                      .height(120)
-                      .backgroundColor(Color.White)
-                      .borderRadius(8)
-                      .padding(16)
-                      .justifyContent(FlexAlign.Center)
-                    }
-
-                    // 访客数统计
-                    GridItem() {
-                      Column() {
-                        Row() {
-                          Text('访客数')
-                            .fontSize(14)
-                            .fontColor(this.textColorSecondary)
-                          Image($r('app.media.user'))
-                            .width(20)
-                            .height(20)
-                            .margin({ left: 8 })
-                        }
-
-                        Text(this.statsData?.uv?.toString() || '0')
-                          .fontSize(24)
-                          .fontWeight(FontWeight.Bold)
-                          .fontColor(this.textColor)
-                          .margin({ top: 8 })
-
-                        Text('较上周')
-                          .fontSize(12)
-                          .fontColor(this.textColorSecondary)
-                          .margin({ top: 4 })
-                      }
-                      .width('100%')
-                      .height(120)
-                      .backgroundColor(Color.White)
-                      .borderRadius(8)
-                      .padding(16)
-                      .justifyContent(FlexAlign.Center)
-                    }
-
-                    // IP数统计
-                    GridItem() {
-                      Column() {
-                        Row() {
-                          Text('IP数')
-                            .fontSize(14)
-                            .fontColor(this.textColorSecondary)
-                          Image($r('app.media.user'))
-                            .width(20)
-                            .height(20)
-                            .margin({ left: 8 })
-                        }
-
-                        Text(this.statsData?.uip?.toString() || '0')
-                          .fontSize(24)
-                          .fontWeight(FontWeight.Bold)
-                          .fontColor(this.textColor)
-                          .margin({ top: 8 })
-
-                        Text('较上周')
-                          .fontSize(12)
-                          .fontColor(this.textColorSecondary)
-                          .margin({ top: 4 })
-                      }
-                      .width('100%')
-                      .height(120)
-                      .backgroundColor(Color.White)
-                      .borderRadius(8)
-                      .padding(16)
-                      .justifyContent(FlexAlign.Center)
-                    }
-                  }
-                  .columnsTemplate('1fr 1fr 1fr')
-                  .columnsGap(16)
-                  .rowsGap(16)
-                  .width('100%')
-                  .margin({ bottom: 24 })
-
-                  // 图表区域
-                  Grid() {
-                    // 访问趋势图
-                    GridItem() {
-                      Column() {
-                        Text('访问趋势')
-                          .fontSize(16)
-                          .fontWeight(FontWeight.Medium)
-                          .fontColor(this.textColor)
-                          .margin({ bottom: 16 })
-
-                        // 模拟图表内容
-                        Row() {
-                          Column() {
-                            Divider().height(1).color('#EEEEEE')
-                            Text('暂无数据')
-                              .fontSize(14)
-                              .fontColor(this.textColorSecondary)
-                              .margin({ top: 100 })
-                            Divider().height(1).color('#EEEEEE')
-                          }
-                          .width('100%')
-                          .height('100%')
-                          .justifyContent(FlexAlign.Center)
-                          .alignItems(HorizontalAlign.Center)
-                        }
-                        .width('100%')
-                        .height('85%')
-                        .backgroundColor('#F8F9FA')
-                        .borderRadius(4)
-                      }
-                      .width('100%')
-                      .height(300)
-                      .backgroundColor(Color.White)
-                      .borderRadius(8)
-                      .padding(16)
-                    }
-
-                    // 地区分布图
-                    GridItem() {
-                      Column() {
-                        Text('地区分布')
-                          .fontSize(16)
-                          .fontWeight(FontWeight.Medium)
-                          .fontColor(this.textColor)
-                          .margin({ bottom: 16 })
-
-                        // 模拟图表内容
-                        Row() {
-                          Column() {
-                            Divider().height(1).color('#EEEEEE')
-                            Text('暂无数据')
-                              .fontSize(14)
-                              .fontColor(this.textColorSecondary)
-                              .margin({ top: 100 })
-                            Divider().height(1).color('#EEEEEE')
-                          }
-                          .width('100%')
-                          .height('100%')
-                          .justifyContent(FlexAlign.Center)
-                          .alignItems(HorizontalAlign.Center)
-                        }
-                        .width('100%')
-                        .height('85%')
-                        .backgroundColor('#F8F9FA')
-                        .borderRadius(4)
-                      }
-                      .width('100%')
-                      .height(300)
-                      .backgroundColor(Color.White)
-                      .borderRadius(8)
-                      .padding(16)
-                    }
-
-                    // 24小时分布图
-                    GridItem() {
-                      Column() {
-                        Text('24小时分布')
-                          .fontSize(16)
-                          .fontWeight(FontWeight.Medium)
-                          .fontColor(this.textColor)
-                          .margin({ bottom: 16 })
-
-                        // 模拟图表内容
-                        Row() {
-                          Column() {
-                            Divider().height(1).color('#EEEEEE')
-                            Text('暂无数据')
-                              .fontSize(14)
-                              .fontColor(this.textColorSecondary)
-                              .margin({ top: 100 })
-                            Divider().height(1).color('#EEEEEE')
-                          }
-                          .width('100%')
-                          .height('100%')
-                          .justifyContent(FlexAlign.Center)
-                          .alignItems(HorizontalAlign.Center)
-                        }
-                        .width('100%')
-                        .height('85%')
-                        .backgroundColor('#F8F9FA')
-                        .borderRadius(4)
-                      }
-                      .width('100%')
-                      .height(300)
-                      .backgroundColor(Color.White)
-                      .borderRadius(8)
-                      .padding(16)
-                    }
-
-                    // IP分布图
-                    GridItem() {
-                      Column() {
-                        Text('IP分布')
-                          .fontSize(16)
-                          .fontWeight(FontWeight.Medium)
-                          .fontColor(this.textColor)
-                          .margin({ bottom: 16 })
-
-                        // 模拟图表内容
-                        Row() {
-                          Column() {
-                            Divider().height(1).color('#EEEEEE')
-                            Text('暂无数据')
-                              .fontSize(14)
-                              .fontColor(this.textColorSecondary)
-                              .margin({ top: 100 })
-                            Divider().height(1).color('#EEEEEE')
-                          }
-                          .width('100%')
-                          .height('100%')
-                          .justifyContent(FlexAlign.Center)
-                          .alignItems(HorizontalAlign.Center)
-                        }
-                        .width('100%')
-                        .height('85%')
-                        .backgroundColor('#F8F9FA')
-                        .borderRadius(4)
-                      }
-                      .width('100%')
-                      .height(300)
-                      .backgroundColor(Color.White)
-                      .borderRadius(8)
-                      .padding(16)
-                    }
-
-                    // 一周分布图
-                    GridItem() {
-                      Column() {
-                        Text('一周分布')
-                          .fontSize(16)
-                          .fontWeight(FontWeight.Medium)
-                          .fontColor(this.textColor)
-                          .margin({ bottom: 16 })
-
-                        // 模拟图表内容
-                        Row() {
-                          Column() {
-                            Divider().height(1).color('#EEEEEE')
-                            Text('暂无数据')
-                              .fontSize(14)
-                              .fontColor(this.textColorSecondary)
-                              .margin({ top: 100 })
-                            Divider().height(1).color('#EEEEEE')
-                          }
-                          .width('100%')
-                          .height('100%')
-                          .justifyContent(FlexAlign.Center)
-                          .alignItems(HorizontalAlign.Center)
-                        }
-                        .width('100%')
-                        .height('85%')
-                        .backgroundColor('#F8F9FA')
-                        .borderRadius(4)
-                      }
-                      .width('100%')
-                      .height(300)
-                      .backgroundColor(Color.White)
-                      .borderRadius(8)
-                      .padding(16)
-                    }
-
-                    // 操作系统分布图
-                    GridItem() {
-                      Column() {
-                        Text('操作系统')
-                          .fontSize(16)
-                          .fontWeight(FontWeight.Medium)
-                          .fontColor(this.textColor)
-                          .margin({ bottom: 16 })
-
-                        // 模拟图表内容
-                        Row() {
-                          Column() {
-                            Divider().height(1).color('#EEEEEE')
-                            Text('暂无数据')
-                              .fontSize(14)
-                              .fontColor(this.textColorSecondary)
-                              .margin({ top: 100 })
-                            Divider().height(1).color('#EEEEEE')
-                          }
-                          .width('100%')
-                          .height('100%')
-                          .justifyContent(FlexAlign.Center)
-                          .alignItems(HorizontalAlign.Center)
-                        }
-                        .width('100%')
-                        .height('85%')
-                        .backgroundColor('#F8F9FA')
-                        .borderRadius(4)
-                      }
-                      .width('100%')
-                      .height(300)
-                      .backgroundColor(Color.White)
-                      .borderRadius(8)
-                      .padding(16)
-                    }
-
-                    // 访问浏览器分布图
-                    GridItem() {
-                      Column() {
-                        Text('访问浏览器')
-                          .fontSize(16)
-                          .fontWeight(FontWeight.Medium)
-                          .fontColor(this.textColor)
-                          .margin({ bottom: 16 })
-
-                        // 模拟图表内容
-                        Row() {
-                          Column() {
-                            Divider().height(1).color('#EEEEEE')
-                            Text('暂无数据')
-                              .fontSize(14)
-                              .fontColor(this.textColorSecondary)
-                              .margin({ top: 100 })
-                            Divider().height(1).color('#EEEEEE')
-                          }
-                          .width('100%')
-                          .height('100%')
-                          .justifyContent(FlexAlign.Center)
-                          .alignItems(HorizontalAlign.Center)
-                        }
-                        .width('100%')
-                        .height('85%')
-                        .backgroundColor('#F8F9FA')
-                        .borderRadius(4)
-                      }
-                      .width('100%')
-                      .height(300)
-                      .backgroundColor(Color.White)
-                      .borderRadius(8)
-                      .padding(16)
-                    }
-
-                    // 访客类型分布图
-                    GridItem() {
-                      Column() {
-                        Text('访客类型')
-                          .fontSize(16)
-                          .fontWeight(FontWeight.Medium)
-                          .fontColor(this.textColor)
-                          .margin({ bottom: 16 })
-
-                        // 模拟图表内容
-                        Row() {
-                          Column() {
-                            Divider().height(1).color('#EEEEEE')
-                            Text('暂无数据')
-                              .fontSize(14)
-                              .fontColor(this.textColorSecondary)
-                              .margin({ top: 100 })
-                            Divider().height(1).color('#EEEEEE')
-                          }
-                          .width('100%')
-                          .height('100%')
-                          .justifyContent(FlexAlign.Center)
-                          .alignItems(HorizontalAlign.Center)
-                        }
-                        .width('100%')
-                        .height('85%')
-                        .backgroundColor('#F8F9FA')
-                        .borderRadius(4)
-                      }
-                      .width('100%')
-                      .height(300)
-                      .backgroundColor(Color.White)
-                      .borderRadius(8)
-                      .padding(16)
-                    }
-
-                    // 访问网络分布图
-                    GridItem() {
-                      Column() {
-                        Text('访问网络')
-                          .fontSize(16)
-                          .fontWeight(FontWeight.Medium)
-                          .fontColor(this.textColor)
-                          .margin({ bottom: 16 })
-
-                        // 模拟图表内容
-                        Row() {
-                          Column() {
-                            Divider().height(1).color('#EEEEEE')
-                            Text('暂无数据')
-                              .fontSize(14)
-                              .fontColor(this.textColorSecondary)
-                              .margin({ top: 100 })
-                            Divider().height(1).color('#EEEEEE')
-                          }
-                          .width('100%')
-                          .height('100%')
-                          .justifyContent(FlexAlign.Center)
-                          .alignItems(HorizontalAlign.Center)
-                        }
-                        .width('100%')
-                        .height('85%')
-                        .backgroundColor('#F8F9FA')
-                        .borderRadius(4)
-                      }
-                      .width('100%')
-                      .height(300)
-                      .backgroundColor(Color.White)
-                      .borderRadius(8)
-                      .padding(16)
-                    }
-
-                    // 访问设备分布图
-                    GridItem() {
-                      Column() {
-                        Text('访问设备')
-                          .fontSize(16)
-                          .fontWeight(FontWeight.Medium)
-                          .fontColor(this.textColor)
-                          .margin({ bottom: 16 })
-
-                        // 模拟图表内容
-                        Row() {
-                          Column() {
-                            Divider().height(1).color('#EEEEEE')
-                            Text('暂无数据')
-                              .fontSize(14)
-                              .fontColor(this.textColorSecondary)
-                              .margin({ top: 100 })
-                            Divider().height(1).color('#EEEEEE')
-                          }
-                          .width('100%')
-                          .height('100%')
-                          .justifyContent(FlexAlign.Center)
-                          .alignItems(HorizontalAlign.Center)
-                        }
-                        .width('100%')
-                        .height('85%')
-                        .backgroundColor('#F8F9FA')
-                        .borderRadius(4)
-                      }
-                      .width('100%')
-                      .height(300)
-                      .backgroundColor(Color.White)
-                      .borderRadius(8)
-                      .padding(16)
-                    }
-                  }
-                  .columnsTemplate('1fr 1fr')
-                  .columnsGap(16)
-                  .rowsGap(16)
-                  .width('100%')
+                  .height('100%')
+                  .padding(24)
                 }
-                .width('100%')
-                .height('100%')
-                .padding(24)
               }
             }
             .width('100%')
