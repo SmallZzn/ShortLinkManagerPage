@@ -89,3 +89,31 @@ export class AssignUserParams {
   userType?: number;
 }
 
+// 基础统计信息接口
+export interface ShortLinkBaseStatsRespDTO {
+  // 在线用户人数
+  onlineUser: number;
+  // 在线管理员人数
+  onlineManager: number;
+  // 今日新增用户数
+  todayNewUser: number;
+  // 昨日新增用户数
+  yesterdayNewUser: number;
+  // 今日访问人次
+  todayPv: number;
+  // 今日访问人数
+  todayUv: number;
+  // 昨日访问人次
+  yesterdayPv: number;
+  // 昨日访问人数
+  yesterdayUv: number;
+  daily?: ShortLinkStatsAccessDailyRespDTO[];
+}
+
+export interface ShortLinkStatsAccessDailyRespDTO {
+  date: string;
+  pv: number;
+  uv: number;
+  uip: number;
+}
+

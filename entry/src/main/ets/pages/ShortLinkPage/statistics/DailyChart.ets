@@ -97,8 +97,8 @@ export struct DailyChart {
     .width('100%')
     .onClick(() => {
       // 添加点击事件，便于测试手动刷新
-      console.info(`[DailyChart] 图表被点击，手动触发刷新`);
-      this.updateChart();
+      // console.info(`[DailyChart] 图表被点击，手动触发刷新`);
+      // this.updateChart();
     })
   }
 

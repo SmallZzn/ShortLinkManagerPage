@@ -15,6 +15,7 @@ import { Hours } from './Statistics/Hours';
 import { Week } from './Statistics/Week';
 import { UserStats } from './Statistics/UserStats';
 import { AccessRecord } from './Statistics/AccessRecord';
+import { BlackList } from './blackListPage/BlackList';
 
 @Entry
 @Component
@@ -818,7 +819,7 @@ struct ManagementMain {
                     this.currentNav === 'user' && this.currentSubNav === 'roleManage' ? '管理员列表' :
                       this.currentNav === 'shortlink' && this.currentSubNav === 'shortlinkList' ? '短链接列表' :
                         this.currentNav === 'stats' ? '访问统计' :
-                          this.currentNav === 'whitelist' && this.currentSubNav === 'whitelistList' ? '白名单列表' : '')
+                          this.currentNav === 'whitelist' && this.currentSubNav === 'whitelistList' ? '黑名单列表' : '')
                 .fontSize(14)
                 .fontColor(this.textColor)
             }
@@ -1446,6 +1447,11 @@ struct ManagementMain {
                   .width('100%')
                   .height('100%')
                   .padding(24)
+                }
+              } else if (this.currentNav === 'whitelist') {
+                // 黑名单列表内容
+                if (this.currentSubNav === 'whitelistList') {
+                  BlackList()
                 }
               }
             }
