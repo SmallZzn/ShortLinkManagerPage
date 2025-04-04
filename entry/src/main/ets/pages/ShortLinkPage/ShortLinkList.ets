@@ -432,7 +432,7 @@ export struct ShortLinkList {
                   // 短链接
                   Column() {
                     Row() {
-                      Text(item.domain + item.shortUri)
+                      Text(item.domain + "/" + item.shortUri)
                         .fontSize(13)
                         .fontColor(this.isLinkExpired(item) ? this.textColorSecondary : '#007AFF')
                         .margin({ bottom: 4 })
@@ -461,7 +461,7 @@ export struct ShortLinkList {
                       .opacity(this.isLinkExpired(item) ? 0.5 : 1)
                       .onClick(() => {
                         if (!this.isLinkExpired(item)) {
-                          this.copyToClipboard(item.domain + item.shortUri || '');
+                          this.copyToClipboard(item.domain + "/" + item.shortUri || '');
                         }
                       })
                     }
@@ -691,7 +691,7 @@ export struct ShortLinkList {
       .height('100%')
       .backgroundColor('#F2F3F5')
       .padding({ top: 10, bottom: 24 })
-      
+
       // 统计抽屉
       if (this.isStatsDrawerOpening && this.currentEditLink) {
         ShortLinkStats({
@@ -702,13 +702,18 @@ export struct ShortLinkList {
             // 关闭后的回调
           }
         })
-        .width('100%')
-        .height('100%')
-        .position({ x: -190, y: 0 }) // 向左移动一些
-        .backgroundColor(Color.White)
-        .borderRadius(8)
-        .zIndex(1)
-        .margin({ left: 0, right: 0, top: 0, bottom: 0 })
+          .width('100%')
+          .height('100%')
+          .position({ x: -190, y: 0 })// 向左移动一些
+          .backgroundColor(Color.White)
+          .borderRadius(8)
+          .zIndex(1)
+          .margin({
+            left: 0,
+            right: 0,
+            top: 0,
+            bottom: 0
+          })
       }
     }
     .width('100%')
@@ -745,14 +750,19 @@ export struct ShortLinkListContainer {
             // 关闭后的回调
           }
         })
-        .width('100%')
-        .height('100%')
-        .position({ x: -50, y: 0 }) // 向左移动一些
-        .backgroundColor(Color.White)
-        .borderRadius(8)
-        .border({ width: 1, color: this.borderColorValue })
-        .zIndex(1)
-        .margin({ left: 0, right: 0, top: 0, bottom: 0 })
+          .width('100%')
+          .height('100%')
+          .position({ x: -50, y: 0 })// 向左移动一些
+          .backgroundColor(Color.White)
+          .borderRadius(8)
+          .border({ width: 1, color: this.borderColorValue })
+          .zIndex(1)
+          .margin({
+            left: 0,
+            right: 0,
+            top: 0,
+            bottom: 0
+          })
       }
     }
     .width('100%')
